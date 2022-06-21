@@ -1,11 +1,4 @@
-/*
- * Http request handler module.
- * Created: 01/04/2022
- * Write by:
- * - Hari Yulianto Pratama
- */
-
-package makeHandler
+package goalMakeHandler
 
 import (
 	"log"
