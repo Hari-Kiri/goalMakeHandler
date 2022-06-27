@@ -41,6 +41,10 @@ func functionHandler(function func(http.ResponseWriter, *http.Request), stringVa
 	}
 }
 
+func HandleFileRequest(requestPattern string, fileDirectory string) {
+	http.Handle(requestPattern, http.StripPrefix(requestPattern, http.FileServer(http.Dir(fileDirectory))))
+}
+
 func Serve(applicationName string, httpPort int) {
 	// Run HTTP server
 	log.Println("[info] Webserver started and serving "+applicationName+" on port", httpPort)
