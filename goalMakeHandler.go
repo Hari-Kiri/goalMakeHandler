@@ -1,13 +1,18 @@
 package goalMakeHandler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
 )
 
+func HandleRequest(function func(http.ResponseWriter, *http.Request), requestPattern string) {
+	http.HandleFunc(requestPattern, functionHandler(function, requestPattern))
+}
+
 // HTTP request handler
-func HandleRequest(function func(http.ResponseWriter, *http.Request), stringValidPath string) http.HandlerFunc {
+func functionHandler(function func(http.ResponseWriter, *http.Request), stringValidPath string) http.HandlerFunc {
 	// Sanitize URL path using regexp
 	var validPath = regexp.MustCompile(stringValidPath)
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
@@ -21,7 +26,7 @@ func HandleRequest(function func(http.ResponseWriter, *http.Request), stringVali
 		// URL path not clean
 		if cleanSlicedUri == nil {
 			// Give 404 response code
-			http.Error(responseWriter, request.URL.Path + " is not found", http.StatusNotFound)
+			http.Error(responseWriter, request.URL.Path+" is not found", http.StatusNotFound)
 			// Log ip address for further process
 			log.Println(
 				"[error: HandleRequest()] not valid url path [",
@@ -36,3 +41,8 @@ func HandleRequest(function func(http.ResponseWriter, *http.Request), stringVali
 	}
 }
 
+func Serve(applicationName string, httpPort int) {
+	// Run HTTP server
+	log.Println("[info] Webserver started and serving "+applicationName+" on port", httpPort)
+	log.Fatal(http.ListenAndServe(fmt.Sprint(":", httpPort), nil))
+}
