@@ -2,9 +2,10 @@ package goalMakeHandler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
+
+	"github.com/Hari-Kiri/temboLog"
 )
 
 func HandleRequest(function func(http.ResponseWriter, *http.Request), requestPattern string) {
@@ -28,12 +29,7 @@ func functionHandler(function func(http.ResponseWriter, *http.Request), stringVa
 			// Give 404 response code
 			http.Error(responseWriter, request.URL.Path+" is not found", http.StatusNotFound)
 			// Log ip address for further process
-			log.Println(
-				"[error: HandleRequest()] not valid url path [",
-				request.URL.Path,
-				"] requested from",
-				request.RemoteAddr,
-			)
+			temboLog.InfoLogging("Not valid url path [", request.URL.Path, "] requested from", request.RemoteAddr)
 			return
 		}
 		// If URL path is clean then open page handler
@@ -47,6 +43,6 @@ func HandleFileRequest(requestPattern string, fileDirectory string) {
 
 func Serve(applicationName string, httpPort int) {
 	// Run HTTP server
-	log.Println("[info] Webserver started and serving "+applicationName+" on port", httpPort)
-	log.Fatal(http.ListenAndServe(fmt.Sprint(":", httpPort), nil))
+	temboLog.InfoLogging("Webserver started and serving", applicationName, "on port", httpPort)
+	temboLog.FatalLogging("Go net/http", http.ListenAndServe(fmt.Sprint(":", httpPort), nil))
 }
